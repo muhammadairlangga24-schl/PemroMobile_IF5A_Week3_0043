@@ -7,80 +7,46 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      initialRoute: '/',
-      routes: {
-        '/': (context) => const HalamanSatu(),
-        '/dua': (context) => const HalamanDua(),
-        '/tiga': (context) => const HalamanTiga(),
-      },
-    );
+    return const MaterialApp(home: MainScreen());
   }
 }
 
-class HalamanSatu extends StatelessWidget {
-  const HalamanSatu({super.key});
+class MainScreen extends StatefulWidget {
+  const MainScreen({super.key});
+
+  @override
+  State<MainScreen> createState() => _MainScreenState();
+}
+
+class _MainScreenState extends State<MainScreen> {
+  int _selectedIndex = 0;
+
+  // Daftar widget tampilan untuk masing-masing tab
+  static const List<Widget> _halaman = [
+    Center(child: Text('Halaman Beranda', style: TextStyle(fontSize: 24))),
+    Center(child: Text('Halaman Cari', style: TextStyle(fontSize: 24))),
+    Center(child: Text('Halaman Profil', style: TextStyle(fontSize: 24))),
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Halaman 1')),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            // Mengirim argumen string ke rute /dua
-            Navigator.pushNamed(
-              context,
-              '/dua',
-              arguments: 'Halo dari Halaman 1!',
-            );
-          },
-          child: const Text('Ke Halaman 2 (Bawa Data)'),
-        ),
-      ),
-    );
-  }
-}
-
-class HalamanDua extends StatelessWidget {
-  const HalamanDua({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    // Mengekstrak argumen dari ModalRoute
-    final args = ModalRoute.of(context)!.settings.arguments as String?;
-
-    return Scaffold(
-      appBar: AppBar(title: const Text('Halaman 2')),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('Pesan diterima: $args', style: const TextStyle(fontSize: 18)),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () => Navigator.pushNamed(context, '/tiga'),
-              child: const Text('Ke Halaman 3'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class HalamanTiga extends StatelessWidget {
-  const HalamanTiga({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Halaman 3')),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () => Navigator.popUntil(context, ModalRoute.withName('/')),
-          child: const Text('Kembali ke Awal'),
-        ),
+      appBar: AppBar(title: const Text('Navigasi Bawah')),
+      body: _halaman.elementAt(_selectedIndex),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Beranda'),
+          BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Cari'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profil'),
+        ],
       ),
     );
   }
